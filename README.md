@@ -17,8 +17,7 @@ Returns (commission, minStake) via getConfig().
 Purpose: allows interacting with a non-standard validator through a wrapper with a known interface.
 
 - Stores the validator’s address. When deploying, you need to specify the validator’s address; in our example, this is MockValidator for flexibility, as the commission fetching function may vary.  
-- Calls getConfig() and returns commission.  
-- This is necessary because the ICommissionReader interface requires commission(), but the validator has no such method — only getConfig().
+- Calls getConfig() and returns commission, this is necessary because the ICommissionReader interface requires commission(), but the validator has no such method — only getConfig().
 
 ---
 
