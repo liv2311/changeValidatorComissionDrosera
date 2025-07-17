@@ -5,6 +5,8 @@ pragma solidity ^0.8.12;
 contract ValidatorAdapter {
     address public validator;
 
+    bytes4 constant GET_CONFIG_SIG = bytes4(keccak256("getConfig()"));
+
     constructor(address _validator) {
         validator = _validator;
     }
@@ -14,7 +16,7 @@ contract ValidatorAdapter {
         // Let's say the validator has a non-standard function:
         // function getConfig() external view returns (uint256 commission, uint256 minStake);
         (bool success, bytes memory result) = validator.staticcall(
-            abi.encodeWithSignature("getConfig()")
+            abi.encode(GET_CONFIG_SIG)
         );
 
         require(success, "call failed");
