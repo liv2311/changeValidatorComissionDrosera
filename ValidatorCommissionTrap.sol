@@ -19,16 +19,19 @@ contract ValidatorCommissionTrap is ITrap {
         return abi.encode(CollectOutput({commission: commissionNow}));
     }
 
-    function shouldRespond(bytes[] calldata data) external pure override returns (bool, bytes memory) {
-        for (uint256 i = 0; i < data.length; i++) {
-            CollectOutput memory output = abi.decode(data[i], (CollectOutput));
-            for (uint256 j = i + 1; j < data.length; j++) {
-                CollectOutput memory other = abi.decode(data[j], (CollectOutput));
-                if (output.commission != other.commission) {
-                    return (true, abi.encode(output.commission));
-                }
+        function shouldRespond(bytes[] calldata data) external pure override returns (bool, bytes memory) {
+        if (data.length < 2) return (false, bytes("Insufficient samples"));
+
+        // Compare all collect outputs
+        CollectOutput memory base = abi.decode(data[0], (CollectOutput));
+
+        for (uint256 i = 1; i < data.length; i++) {
+            CollectOutput memory comparison = abi.decode(data[i], (CollectOutput));
+            if (comparison.commission != base.commission) {
+                return (true, abi.encode(base.commission));
             }
         }
+
         return (false, bytes(""));
     }
 }
